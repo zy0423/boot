@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.Set;
 /**
  * Created by zy on 2016/5/11.
  */
+@Lazy(true)//因为集成shiro的原因需要延迟加载--shiro加载在bean加载之前
 public interface PermissionMapper {
     @Select("SELECT * FROM sys_permission WHERE id = #{id}")
     public Permission findPermissionById(Integer id);
