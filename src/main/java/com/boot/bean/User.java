@@ -29,7 +29,11 @@ public class User extends BaseEntity{
      */
     private Boolean locked = Boolean.FALSE;
 
+
+    private String credentialsSalt;
+
     public User() {
+
     }
 
     public User(String username, String password) {

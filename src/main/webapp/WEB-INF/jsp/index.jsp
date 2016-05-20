@@ -17,6 +17,7 @@
     <form action="/login" method="post">
         <input type="text" name="name"/>
         <input type="password" name="password"/>
+        <input type="radio" name="rememberMe" value="1">
         <button type="submit">提交</button>
     </form>
 </div>

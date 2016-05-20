@@ -2,6 +2,7 @@ package com.boot.service;
 
 import com.boot.mapper.RoleMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
@@ -15,7 +16,9 @@ public class RoleService {
     @Autowired
     private RoleMapper roleMapper;
 
+    @Cacheable(value = "rolecache", keyGenerator = "wiselyKeyGenerator")
     public Set<String> getRolesByUserName(String username) {
+        System.out.println("rolecache 缓存初始化");
         return roleMapper.findRoles(username);
     }
 }

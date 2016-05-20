@@ -3,8 +3,13 @@ package com.boot.config;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.apache.shiro.cache.ehcache.EhCacheManager;
+import org.apache.shiro.authc.credential.DefaultPasswordService;
+import org.apache.shiro.authc.credential.PasswordMatcher;
+import org.crazycake.shiro.RedisCacheManager;
 import org.apache.shiro.mgt.RememberMeManager;
+import org.crazycake.shiro.RedisManager;
+import org.crazycake.shiro.RedisSessionDAO;
+import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
@@ -14,6 +19,7 @@ import org.apache.shiro.web.servlet.SimpleCookie;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -27,10 +33,13 @@ public class ShiroConfiguration
 
 	private static Map<String, String> filterChainDefinitionMap = new LinkedHashMap<String, String>();
 
+	private RedisCacheManager cacheManager;
+
 	@Bean(name = "shiroFilter")
 	public ShiroFilterFactoryBean getShiroFilterFactoryBean()
 	{
 		ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
+		//shiroFilterFactoryBean.setSecurityManager(getDefaultWebSecurityManager());
 		shiroFilterFactoryBean.setSecurityManager(getDefaultWebSecurityManager());
 		shiroFilterFactoryBean.setLoginUrl("/login");
 		shiroFilterFactoryBean.setSuccessUrl("/main");
@@ -42,20 +51,47 @@ public class ShiroConfiguration
 	}
 
 	@Bean(name = "ShiroRealmImpl")
-	public ShiroRealmImpl getShiroRealm()
-	{
+	public ShiroRealmImpl getShiroRealm() {
+		final ShiroRealmImpl realm = new ShiroRealmImpl();
+		realm.setCredentialsMatcher(credentialsMatcher());
 		return new ShiroRealmImpl();
 	}
 
-
-	@Bean(name = "shiroEhcacheManager")
-	public EhCacheManager getEhCacheManager()
+	@Bean(name = "redisManager")
+	public RedisManager getRedisManager()
 	{
-		EhCacheManager em = new EhCacheManager();
-		em.setCacheManagerConfigFile("classpath:ehcache-shiro.xml");
-		return em;
+		RedisManager rm = new RedisManager();
+		rm.setHost("127.0.0.1");
+		rm.setPort(6379);
+		rm.setExpire(1800);
+		rm.setTimeout(10000);
+		return rm;
 	}
 
+	public RedisCacheManager getCacheManager() {
+		return this.cacheManager;
+	}
+
+	@Autowired
+	public void setCacheManager(RedisCacheManager cacheManager)
+	{
+		this.cacheManager = cacheManager;
+		this.cacheManager.setRedisManager(getRedisManager());
+	}
+
+	@Bean(name = "redisSessionDAO")
+	public RedisSessionDAO getRedisSessionDAO() {
+		RedisSessionDAO sm = new RedisSessionDAO();
+		sm.setRedisManager(getRedisManager());
+		return sm;
+	}
+
+	@Bean(name = "sessionManager")
+	public DefaultWebSessionManager getSessionManager() {
+		DefaultWebSessionManager defaultWebSessionManager = new DefaultWebSessionManager();
+		defaultWebSessionManager.setSessionDAO(getRedisSessionDAO());
+		return defaultWebSessionManager;
+	}
 
 	@Bean(name = "lifecycleBeanPostProcessor")
 	public LifecycleBeanPostProcessor getLifecycleBeanPostProcessor()
@@ -76,10 +112,22 @@ public class ShiroConfiguration
 	{
 		DefaultWebSecurityManager dwsm = new DefaultWebSecurityManager();
 		dwsm.setRealm(getShiroRealm());
-		dwsm.setCacheManager(getEhCacheManager());
+		dwsm.setCacheManager(getCacheManager());
+		dwsm.setSessionManager(getSessionManager());
 		return dwsm;
 	}
 
+	@Bean(name = "credentialsMatcher")
+	public PasswordMatcher credentialsMatcher() {
+		final PasswordMatcher credentialsMatcher = new PasswordMatcher();
+		credentialsMatcher.setPasswordService(passwordService());
+		return credentialsMatcher;
+	}
+
+	@Bean(name = "passwordService")
+	public DefaultPasswordService passwordService() {
+		return new DefaultPasswordService();
+	}
 
 	@Bean
 	public RememberMeManager rememberMeManager()

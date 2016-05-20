@@ -5,6 +5,7 @@ import com.boot.service.PermissionService;
 import com.boot.service.RoleService;
 import com.boot.service.UserService;
 import org.apache.shiro.authc.*;
+import org.apache.shiro.authc.credential.PasswordService;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
@@ -13,10 +14,11 @@ import org.apache.shiro.util.ByteSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
 
 import java.util.Set;
 
+@Component
 public class ShiroRealmImpl extends AuthorizingRealm
 {
 
@@ -58,7 +60,8 @@ public class ShiroRealmImpl extends AuthorizingRealm
 	@Override
 	protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException
 	{
-		String username = (String) token.getPrincipal();
+		final UsernamePasswordToken credentials = (UsernamePasswordToken) token;
+		String username = credentials.getUsername();
 		User user = userService.getUserByName(username);
 		if (user == null) {
 			throw new UnknownAccountException();//没找到帐号
@@ -69,7 +72,7 @@ public class ShiroRealmImpl extends AuthorizingRealm
 		//交给AuthenticatingRealm使用CredentialsMatcher进行密码匹配，如果觉得人家的不好可以在此判断或自定义实现
 		SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(
 				user.getName(), //用户名
-				user.getPassword(), //密码
+				user.getPassword().toCharArray(), //密码
 				ByteSource.Util.bytes(user.getCredentialsSalt()),//salt=username+salt
 				getName()  //realm name
 		);

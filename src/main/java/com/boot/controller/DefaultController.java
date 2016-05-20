@@ -1,6 +1,8 @@
 package com.boot.controller;
 
 
+import com.boot.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,9 +18,14 @@ public class DefaultController
     @Value("${application.message:Hello World}")
     private String message = "Hello World";
 
+    @Autowired
+    private UserService userService;
+
     @RequestMapping(value = {"/", "/index","/login"},method = RequestMethod.GET)
     public String index()
     {
+        //userService.findAddress(1l,"anhui","hefei");
+        userService.getUserById(1l, "anhui", "hefei");
         return "index";
     }
 

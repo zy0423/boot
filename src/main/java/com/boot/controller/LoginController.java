@@ -27,7 +27,7 @@ public class LoginController
 		String password = user.getPassword();
 
 		UsernamePasswordToken token = new UsernamePasswordToken(userName, password);
-		//token.setRememberMe(rememberMe);
+		token.setRememberMe(rememberMe);
 
 		Subject subject = SecurityUtils.getSubject();
 
@@ -71,26 +71,9 @@ public class LoginController
 	}
 
 	@RequestMapping(value = "/logout")
-	public String logout(@RequestParam(FormAuthenticationFilter.DEFAULT_USERNAME_PARAM) String username, HttpServletRequest request, Model model) {
+	public String logout() {
 		SecurityUtils.getSubject().logout();
-		return "login";
+		return "redirect:/index";
 	}
 
-	private String parseException(HttpServletRequest request) {
-		String errorClassName = (String) request.getAttribute(FormAuthenticationFilter.DEFAULT_ERROR_KEY_ATTRIBUTE_NAME);
-
-		String msg = null;
-		if (UnknownAccountException.class.getName().equals(errorClassName)) {
-			msg = "Username or password is incorrect.";
-		} else if (IncorrectCredentialsException.class.getName().equals(errorClassName)) {
-			msg = "Username or password is incorrect.";
-		} else if (AuthenticationException.class.getName().equals(errorClassName)) {
-			msg = "Username or password is incorrect.";
-		} else if (DisabledAccountException.class.getName().equals(errorClassName)) {
-			msg = "Username or password is incorrect.";
-		} else {
-			msg = "Username or password is incorrect.";
-		}
-		return msg;
-	}
 }

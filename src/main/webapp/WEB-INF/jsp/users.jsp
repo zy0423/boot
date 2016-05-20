@@ -11,6 +11,10 @@
     <title>Title</title>
 </head>
 <body>
-
+<ul>
+    <c:forEach items="${roles}" var="r">
+        <li>${r}</li>
+    </c:forEach>
+</ul>
 </body>
 </html>
