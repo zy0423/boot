@@ -16,9 +16,8 @@ public class PermissionService {
     @Autowired
     private PermissionMapper permissionMapper;
 
-    @Cacheable(value = "permissioncache", keyGenerator = "wiselyKeyGenerator")
+    @Cacheable(value = "permissioncache", key = "'getPermissionsByUserName'+#username")
     public Set<String> getPermissionsByUserName(String username) {
-        System.out.println("permissioncache 缓存初始化");
         return permissionMapper.findPermissions(username);
     }
 }

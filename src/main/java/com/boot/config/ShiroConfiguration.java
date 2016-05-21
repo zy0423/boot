@@ -8,14 +8,13 @@ import org.apache.shiro.authc.credential.PasswordMatcher;
 import org.crazycake.shiro.RedisCacheManager;
 import org.apache.shiro.mgt.RememberMeManager;
 import org.crazycake.shiro.RedisManager;
-import org.crazycake.shiro.RedisSessionDAO;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
-import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.CookieRememberMeManager;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.servlet.SimpleCookie;
+import org.crazycake.shiro.RedisSessionDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
@@ -24,6 +23,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.boot.shiro.realm.ShiroRealmImpl;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.data.redis.core.RedisTemplate;
 
 
 @Configuration
@@ -33,13 +34,10 @@ public class ShiroConfiguration
 
 	private static Map<String, String> filterChainDefinitionMap = new LinkedHashMap<String, String>();
 
-	private RedisCacheManager cacheManager;
-
 	@Bean(name = "shiroFilter")
 	public ShiroFilterFactoryBean getShiroFilterFactoryBean()
 	{
 		ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
-		//shiroFilterFactoryBean.setSecurityManager(getDefaultWebSecurityManager());
 		shiroFilterFactoryBean.setSecurityManager(getDefaultWebSecurityManager());
 		shiroFilterFactoryBean.setLoginUrl("/login");
 		shiroFilterFactoryBean.setSuccessUrl("/main");
@@ -50,7 +48,7 @@ public class ShiroConfiguration
 		return shiroFilterFactoryBean;
 	}
 
-	@Bean(name = "ShiroRealmImpl")
+	@Bean(name = "shiroRealmImpl")
 	public ShiroRealmImpl getShiroRealm() {
 		final ShiroRealmImpl realm = new ShiroRealmImpl();
 		realm.setCredentialsMatcher(credentialsMatcher());
@@ -60,26 +58,24 @@ public class ShiroConfiguration
 	@Bean(name = "redisManager")
 	public RedisManager getRedisManager()
 	{
-		RedisManager rm = new RedisManager();
-		rm.setHost("127.0.0.1");
-		rm.setPort(6379);
-		rm.setExpire(1800);
-		rm.setTimeout(10000);
-		return rm;
+		RedisManager redisManager = new RedisManager();
+		redisManager.setHost("127.0.0.1");
+		redisManager.setPort(6379);
+		redisManager.setExpire(1800);
+		redisManager.setTimeout(0);
+		return  redisManager;
 	}
 
+
+	@Bean(name = "redisCacheManager")
 	public RedisCacheManager getCacheManager() {
-		return this.cacheManager;
+		RedisCacheManager redisCacheManager = new RedisCacheManager();
+		redisCacheManager.setRedisManager(getRedisManager());
+		redisCacheManager.setKeyPrefix("users:security:authz");
+		return redisCacheManager;
 	}
 
-	@Autowired
-	public void setCacheManager(RedisCacheManager cacheManager)
-	{
-		this.cacheManager = cacheManager;
-		this.cacheManager.setRedisManager(getRedisManager());
-	}
-
-	@Bean(name = "redisSessionDAO")
+	@Bean(name = "sessionDAO")
 	public RedisSessionDAO getRedisSessionDAO() {
 		RedisSessionDAO sm = new RedisSessionDAO();
 		sm.setRedisManager(getRedisManager());
@@ -90,21 +86,8 @@ public class ShiroConfiguration
 	public DefaultWebSessionManager getSessionManager() {
 		DefaultWebSessionManager defaultWebSessionManager = new DefaultWebSessionManager();
 		defaultWebSessionManager.setSessionDAO(getRedisSessionDAO());
+		defaultWebSessionManager.setSessionIdCookie(getSimpleCookie());
 		return defaultWebSessionManager;
-	}
-
-	@Bean(name = "lifecycleBeanPostProcessor")
-	public LifecycleBeanPostProcessor getLifecycleBeanPostProcessor()
-	{
-		return new LifecycleBeanPostProcessor();
-	}
-
-	@Bean
-	public DefaultAdvisorAutoProxyCreator getDefaultAdvisorAutoProxyCreator()
-	{
-		DefaultAdvisorAutoProxyCreator daap = new DefaultAdvisorAutoProxyCreator();
-		daap.setProxyTargetClass(true);
-		return daap;
 	}
 
 	@Bean(name = "securityManager")
@@ -112,10 +95,33 @@ public class ShiroConfiguration
 	{
 		DefaultWebSecurityManager dwsm = new DefaultWebSecurityManager();
 		dwsm.setRealm(getShiroRealm());
+		dwsm.setRememberMeManager(rememberMeManager());
 		dwsm.setCacheManager(getCacheManager());
 		dwsm.setSessionManager(getSessionManager());
 		return dwsm;
 	}
+
+	@Bean(name = "simpleCookie")
+	public SimpleCookie getSimpleCookie()
+	{
+		SimpleCookie simpleCookie = new SimpleCookie();
+		simpleCookie.setName("WAPSESSIONID");
+		return simpleCookie;
+	}
+
+	@Bean
+	public static LifecycleBeanPostProcessor lifecycleBeanPostProcessor() {
+		return new LifecycleBeanPostProcessor();
+	}
+
+	@Bean
+	@DependsOn("lifecycleBeanPostProcessor")
+	public static DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
+		DefaultAdvisorAutoProxyCreator advisorAutoProxyCreator = new DefaultAdvisorAutoProxyCreator();
+		advisorAutoProxyCreator.setProxyTargetClass(true);
+		return advisorAutoProxyCreator;
+	}
+
 
 	@Bean(name = "credentialsMatcher")
 	public PasswordMatcher credentialsMatcher() {
@@ -129,7 +135,7 @@ public class ShiroConfiguration
 		return new DefaultPasswordService();
 	}
 
-	@Bean
+	@Bean(name = "rememberMeManager")
 	public RememberMeManager rememberMeManager()
 	{
 		logger.debug("create remember me manager.");
@@ -143,11 +149,4 @@ public class ShiroConfiguration
 		return rememberMeManager;
 	}
 
-	@Bean
-	public AuthorizationAttributeSourceAdvisor getAuthorizationAttributeSourceAdvisor()
-	{
-		AuthorizationAttributeSourceAdvisor aasa = new AuthorizationAttributeSourceAdvisor();
-		aasa.setSecurityManager(getDefaultWebSecurityManager());
-		return new AuthorizationAttributeSourceAdvisor();
-	}
 }

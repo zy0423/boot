@@ -24,7 +24,6 @@ public class DefaultController
     @RequestMapping(value = {"/", "/index","/login"},method = RequestMethod.GET)
     public String index()
     {
-        //userService.findAddress(1l,"anhui","hefei");
         userService.getUserById(1l, "anhui", "hefei");
         return "index";
     }

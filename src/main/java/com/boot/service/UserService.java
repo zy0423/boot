@@ -1,6 +1,5 @@
 package com.boot.service;
 
-import com.boot.bean.Address;
 import com.boot.bean.User;
 import com.boot.mapper.UserMapper;
 import com.github.pagehelper.PageHelper;
@@ -19,17 +18,10 @@ public class UserService {
     @Autowired
     private UserMapper userMapper;
 
-    @Cacheable(value = "usercache", keyGenerator = "wiselyKeyGenerator")
+    @Cacheable(value = "usercache", key = "'getUserById'+#id+#province+#city")
     public User getUserById(Long id, String province, String city)
     {
-        System.out.println("usercache 缓存初始化");
         return new User();
-    }
-
-    @Cacheable(value = "addresscache", keyGenerator = "wiselyKeyGenerator")
-    public Address findAddress(Long id, String province, String city) {
-        System.out.println("无缓存的时候调用这里");
-        return new Address(id, province, city);
     }
 
     public User getUserByName(String name) {
