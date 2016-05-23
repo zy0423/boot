@@ -13,7 +13,7 @@ public class ErrorHandleController implements ErrorController
 	 */
 	public String getErrorPath()
 	{
-		return "/error";
+		return "error";
 	}
 
 	@RequestMapping

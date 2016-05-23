@@ -18,6 +18,7 @@
 </shiro:user>
 
 <a href="/main/users">用户列表</a>
+<a href="/session">在线用户列表</a>
 
 <shiro:hasRole name="admin">
     用户[<shiro:principal/>]拥有角色admin<br/>

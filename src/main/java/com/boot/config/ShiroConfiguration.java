@@ -18,13 +18,10 @@ import org.crazycake.shiro.RedisSessionDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 import com.boot.shiro.realm.ShiroRealmImpl;
 import org.springframework.context.annotation.DependsOn;
-import org.springframework.data.redis.core.RedisTemplate;
 
 
 @Configuration
@@ -34,6 +31,19 @@ public class ShiroConfiguration
 
 	private static Map<String, String> filterChainDefinitionMap = new LinkedHashMap<String, String>();
 
+	@Bean
+	public static LifecycleBeanPostProcessor lifecycleBeanPostProcessor() {
+		return new LifecycleBeanPostProcessor();
+	}
+
+	@Bean
+	@DependsOn("lifecycleBeanPostProcessor")
+	public static DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
+		DefaultAdvisorAutoProxyCreator advisorAutoProxyCreator = new DefaultAdvisorAutoProxyCreator();
+		advisorAutoProxyCreator.setProxyTargetClass(true);
+		return advisorAutoProxyCreator;
+	}
+
 	@Bean(name = "shiroFilter")
 	public ShiroFilterFactoryBean getShiroFilterFactoryBean()
 	{
@@ -42,8 +52,11 @@ public class ShiroConfiguration
 		shiroFilterFactoryBean.setLoginUrl("/login");
 		shiroFilterFactoryBean.setSuccessUrl("/main");
 		shiroFilterFactoryBean.setUnauthorizedUrl("/index");
+
 		filterChainDefinitionMap.put("/main/**", "authc");
+		filterChainDefinitionMap.put("/session/**", "authc");
 		filterChainDefinitionMap.put("/static/*", "anon");
+
 		shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
 		return shiroFilterFactoryBean;
 	}
@@ -65,7 +78,6 @@ public class ShiroConfiguration
 		redisManager.setTimeout(0);
 		return  redisManager;
 	}
-
 
 	@Bean(name = "redisCacheManager")
 	public RedisCacheManager getCacheManager() {
@@ -108,20 +120,6 @@ public class ShiroConfiguration
 		simpleCookie.setName("WAPSESSIONID");
 		return simpleCookie;
 	}
-
-	@Bean
-	public static LifecycleBeanPostProcessor lifecycleBeanPostProcessor() {
-		return new LifecycleBeanPostProcessor();
-	}
-
-	@Bean
-	@DependsOn("lifecycleBeanPostProcessor")
-	public static DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
-		DefaultAdvisorAutoProxyCreator advisorAutoProxyCreator = new DefaultAdvisorAutoProxyCreator();
-		advisorAutoProxyCreator.setProxyTargetClass(true);
-		return advisorAutoProxyCreator;
-	}
-
 
 	@Bean(name = "credentialsMatcher")
 	public PasswordMatcher credentialsMatcher() {
