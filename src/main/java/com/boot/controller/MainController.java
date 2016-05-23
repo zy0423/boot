@@ -35,6 +35,9 @@ public class MainController {
 
     @RequestMapping("/users")
     public String users(Model model) {
+        String username = (String) SecurityUtils.getSubject().getPrincipal();
+        Set<String> roles = roleService.getRolesByUserName(username);
+        model.addAttribute("roles", roles);
         return "users";
     }
 }

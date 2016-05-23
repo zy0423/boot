@@ -16,8 +16,9 @@ public class RoleService {
     @Autowired
     private RoleMapper roleMapper;
 
-    @Cacheable(value = "rolecache", key = "'getRolesByUserName'+#username")
+    @Cacheable(value = "rolecache", keyGenerator = "wiselyKeyGenerator")
     public Set<String> getRolesByUserName(String username) {
+        System.out.println("初始化 rolecache");
         return roleMapper.findRoles(username);
     }
 }

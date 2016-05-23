@@ -26,7 +26,7 @@ import java.lang.reflect.Method;
 public class RedisConfiguration extends CachingConfigurerSupport {
 
     //因为shiro的原因 自定义的key生成器会失效
-    /*@Bean(name = "wiselyKeyGenerator")
+    @Bean(name = "wiselyKeyGenerator")
     public KeyGenerator wiselyKeyGenerator() {
         return new KeyGenerator() {
             @Override
@@ -41,7 +41,7 @@ public class RedisConfiguration extends CachingConfigurerSupport {
             }
         };
 
-    }*/
+    }
 
     @Bean
     public CacheManager cacheManager(@SuppressWarnings("rawtypes") RedisTemplate redisTemplate) {
@@ -57,8 +57,8 @@ public class RedisConfiguration extends CachingConfigurerSupport {
         om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
         jackson2JsonRedisSerializer.setObjectMapper(om);
 
-        template.setValueSerializer(jackson2JsonRedisSerializer);
         template.afterPropertiesSet();
+        template.setValueSerializer(jackson2JsonRedisSerializer);
         template.setKeySerializer(new StringRedisSerializer());
         template.setHashKeySerializer(new StringRedisSerializer());
         template.setHashValueSerializer(new LdapFailAwareRedisObjectSerializer());
