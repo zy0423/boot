@@ -118,6 +118,8 @@ public class ShiroConfiguration
 	{
 		SimpleCookie simpleCookie = new SimpleCookie();
 		simpleCookie.setName("WAPSESSIONID");
+		simpleCookie.setHttpOnly(true);
+		simpleCookie.setMaxAge(2592000);
 		return simpleCookie;
 	}
 
@@ -138,12 +140,8 @@ public class ShiroConfiguration
 	{
 		logger.debug("create remember me manager.");
 
-		SimpleCookie simpleCookie = new SimpleCookie("rememberMe");
-		simpleCookie.setHttpOnly(true);
-		simpleCookie.setMaxAge(2592000);
-
 		CookieRememberMeManager	 rememberMeManager = new CookieRememberMeManager();
-		rememberMeManager.setCookie(simpleCookie);
+		rememberMeManager.setCookie(getSimpleCookie());
 		return rememberMeManager;
 	}
 
