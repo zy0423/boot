@@ -11,6 +11,7 @@
 <html>
 <head>
     <title>Title</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 <div>
@@ -21,5 +22,7 @@
         <button type="submit">提交</button>
     </form>
 </div>
+
+<script type="application/javascript" src="/js/jquery-2.2.4.min.js"/>
 </body>
 </html>

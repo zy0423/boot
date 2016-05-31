@@ -34,7 +34,7 @@ public class LoginController
 		try {
 			subject.login(token);
 			if (subject.isAuthenticated()) {
-				return "redirect:/main";
+				return "redirect:/home";
 			} else {
 				return "redirect:/index";
 			}

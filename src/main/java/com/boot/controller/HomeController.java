@@ -18,8 +18,8 @@ import java.util.Set;
  * Created by kuye on 2016/5/12.
  */
 @Controller
-@RequestMapping("/main")
-public class MainController {
+@RequestMapping("/home")
+public class HomeController {
 
     @Autowired
     private UserService userService;
@@ -30,7 +30,7 @@ public class MainController {
     @RequestMapping
     public String main(Model model)
     {
-        return "main";
+        return "home";
     }
 
     @RequestMapping("/users")

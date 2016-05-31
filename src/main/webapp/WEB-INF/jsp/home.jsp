@@ -17,7 +17,7 @@
     欢迎[<shiro:principal/>]登录，<a href="/logout">退出</a>
 </shiro:user>
 
-<a href="/main/users">用户列表</a>
+<a href="/home/users">用户列表</a>
 <a href="/session">在线用户列表</a>
 
 <shiro:hasRole name="admin">

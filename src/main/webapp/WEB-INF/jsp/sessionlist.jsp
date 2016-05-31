@@ -38,5 +38,7 @@
     </c:forEach>
     </tbody>
 </table>
+
+<script type="application/javascript" src="/js/jquery-2.2.4.min.js"/>
 </body>
 </html>

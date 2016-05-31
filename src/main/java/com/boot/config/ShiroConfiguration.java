@@ -50,10 +50,10 @@ public class ShiroConfiguration
 		ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
 		shiroFilterFactoryBean.setSecurityManager(getDefaultWebSecurityManager());
 		shiroFilterFactoryBean.setLoginUrl("/login");
-		shiroFilterFactoryBean.setSuccessUrl("/main");
+		shiroFilterFactoryBean.setSuccessUrl("/home");
 		shiroFilterFactoryBean.setUnauthorizedUrl("/index");
 
-		filterChainDefinitionMap.put("/main/**", "authc");
+		filterChainDefinitionMap.put("/home/**", "authc");
 		filterChainDefinitionMap.put("/session/**", "authc");
 		filterChainDefinitionMap.put("/static/*", "anon");
 
@@ -98,7 +98,7 @@ public class ShiroConfiguration
 	public DefaultWebSessionManager getSessionManager() {
 		DefaultWebSessionManager defaultWebSessionManager = new DefaultWebSessionManager();
 		defaultWebSessionManager.setSessionDAO(getRedisSessionDAO());
-		defaultWebSessionManager.setSessionIdCookie(getSimpleCookie());
+		defaultWebSessionManager.setSessionIdCookie(sessionCookie());
 		return defaultWebSessionManager;
 	}
 
@@ -113,16 +113,6 @@ public class ShiroConfiguration
 		return dwsm;
 	}
 
-	@Bean(name = "simpleCookie")
-	public SimpleCookie getSimpleCookie()
-	{
-		SimpleCookie simpleCookie = new SimpleCookie();
-		simpleCookie.setName("WAPSESSIONID");
-		simpleCookie.setHttpOnly(true);
-		simpleCookie.setMaxAge(2592000);
-		return simpleCookie;
-	}
-
 	@Bean(name = "credentialsMatcher")
 	public PasswordMatcher credentialsMatcher() {
 		final PasswordMatcher credentialsMatcher = new PasswordMatcher();
@@ -135,13 +125,32 @@ public class ShiroConfiguration
 		return new DefaultPasswordService();
 	}
 
+	@Bean(name = "simpleCookie")
+	public SimpleCookie sessionCookie()
+	{
+		SimpleCookie simpleCookie = new SimpleCookie();
+		simpleCookie.setName("WAPSESSIONID");
+		simpleCookie.setHttpOnly(true);
+		simpleCookie.setMaxAge(1800);
+		return simpleCookie;
+	}
+
+	@Bean(name = "rememberMeCookie")
+	public SimpleCookie rememberMeCookie(){
+		logger.debug("create remember me rememberMeCookie.");
+		//这个参数是cookie的名称，对应前端的checkbox的name = rememberMe
+		SimpleCookie simpleCookie = new SimpleCookie("rememberMe");
+		//<!-- 记住我cookie生效时间30天 ,单位秒;-->
+		simpleCookie.setMaxAge(259200);
+		return simpleCookie;
+	}
+
 	@Bean(name = "rememberMeManager")
 	public RememberMeManager rememberMeManager()
 	{
 		logger.debug("create remember me manager.");
-
 		CookieRememberMeManager	 rememberMeManager = new CookieRememberMeManager();
-		rememberMeManager.setCookie(getSimpleCookie());
+		rememberMeManager.setCookie(rememberMeCookie());
 		return rememberMeManager;
 	}
 

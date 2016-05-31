@@ -3,22 +3,20 @@ package com.boot.controller;
 import org.springframework.boot.autoconfigure.web.ErrorController;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
-public class ErrorHandleController implements ErrorController
-{
-	/**
-	 * @return
-	 * @see ErrorController#getErrorPath()
-	 */
-	public String getErrorPath()
-	{
-		return "error";
+@RestController
+public class ErrorHandleController implements ErrorController{
+
+	private static final String PATH = "/error";
+
+	@RequestMapping(value = PATH)
+	public String error() {
+		return "Error handling";
 	}
 
-	@RequestMapping
-	public String errorHandle()
-	{
-		return getErrorPath();
+	@Override
+	public String getErrorPath() {
+		return PATH;
 	}
 }
