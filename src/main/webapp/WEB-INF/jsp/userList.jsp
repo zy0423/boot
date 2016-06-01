@@ -14,8 +14,8 @@
 </head>
 <body>
 <ul>
-    <c:forEach items="${roles}" var="name">
-        <li>${name}</li>
+    <c:forEach items="${users}" var="u">
+        <li><a href="/user/${u.id}">${u.name}</a></li>
     </c:forEach>
 </ul>
 </body>

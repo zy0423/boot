@@ -55,6 +55,7 @@ public class ShiroConfiguration
 
 		filterChainDefinitionMap.put("/home/**", "authc");
 		filterChainDefinitionMap.put("/session/**", "authc");
+		filterChainDefinitionMap.put("/user/**", "authc");
 		filterChainDefinitionMap.put("/static/*", "anon");
 
 		shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
@@ -75,7 +76,7 @@ public class ShiroConfiguration
 		redisManager.setHost("127.0.0.1");
 		redisManager.setPort(6379);
 		redisManager.setExpire(1800);
-		redisManager.setTimeout(0);
+		redisManager.setTimeout(1800);
 		return  redisManager;
 	}
 

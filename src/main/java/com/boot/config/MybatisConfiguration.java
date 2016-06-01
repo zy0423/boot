@@ -3,7 +3,6 @@ package com.boot.config;
 import java.util.Properties;
 
 import javax.annotation.Resource;
-import javax.persistence.EntityManager;
 import javax.sql.DataSource;
 
 import com.github.pagehelper.PageHelper;
@@ -12,50 +11,41 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
+import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.bind.RelaxedPropertyResolver;
-import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 
 @Configuration
-@ConditionalOnClass({EnableTransactionManagement.class, EntityManager.class})
 @AutoConfigureAfter({DataBaseConfiguration.class})
 @MapperScan(basePackages = {"com.boot.mapper"})
-public class MybatisConfiguration implements EnvironmentAware {
+public class MybatisConfiguration{
 
     private static Log logger = LogFactory.getLog(MybatisConfiguration.class);
 
-    private RelaxedPropertyResolver propertyResolver;
+    @Value("${mybatis.typeAliasesPackage}")
+    private String typeAliasesPackage;
 
-    @Resource(name = "dataSource")
-    private DataSource dataSource;
+    @Value("${mybatis.mapperLocations}")
+    private String propertyResolver;
 
-    @Override
-    public void setEnvironment(Environment environment) {
-        this.propertyResolver = new RelaxedPropertyResolver(environment, "mybatis.");
-    }
+    @Value("${mybatis.configLocation}")
+    private String configLocation;
 
     @Bean(name = "sqlSessionFactory")
-    @ConditionalOnMissingBean
-    public SqlSessionFactory sqlSessionFactory() {
+    public SqlSessionFactory sqlSessionFactory(DataSource dataSource) {
         try {
 
             SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
             sessionFactory.setDataSource(dataSource);
-            sessionFactory.setTypeAliasesPackage(propertyResolver.getProperty("typeAliasesPackage"));
-            sessionFactory.setMapperLocations(new PathMatchingResourcePatternResolver().getResources(propertyResolver.getProperty("mapperLocations")));
-            sessionFactory.setConfigLocation(new ClassPathResource("mybatis-config.xml"));
-            sessionFactory.setFailFast(true);
+            sessionFactory.setTypeAliasesPackage(typeAliasesPackage);
+            sessionFactory.setMapperLocations(new PathMatchingResourcePatternResolver().getResources(propertyResolver));
+            sessionFactory.setConfigLocation(new ClassPathResource(configLocation));
 
             //分页插件
             PageHelper pageHelper = new PageHelper();
@@ -77,8 +67,7 @@ public class MybatisConfiguration implements EnvironmentAware {
     }
 
     @Bean
-    @ConditionalOnMissingBean
-    public DataSourceTransactionManager transactionManager() {
-        return new DataSourceTransactionManager(dataSource);
+    public SqlSessionTemplate sqlSessionTemplate(SqlSessionFactory sqlSessionFactory) {
+        return new SqlSessionTemplate(sqlSessionFactory);
     }
 }

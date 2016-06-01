@@ -8,7 +8,7 @@ public class BaseEntity implements Serializable {
     @Id
     @Column(name = "Id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Transient
     private Integer page = 1;
@@ -16,11 +16,11 @@ public class BaseEntity implements Serializable {
     @Transient
     private Integer rows = 10;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

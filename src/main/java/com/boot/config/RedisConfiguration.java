@@ -1,6 +1,5 @@
 package com.boot.config;
 
-import com.boot.util.LdapFailAwareRedisObjectSerializer;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,7 +24,6 @@ import java.lang.reflect.Method;
 @EnableCaching(proxyTargetClass = true)
 public class RedisConfiguration extends CachingConfigurerSupport {
 
-    //因为shiro的原因 自定义的key生成器会失效
     @Bean(name = "wiselyKeyGenerator")
     public KeyGenerator wiselyKeyGenerator() {
         return new KeyGenerator() {
@@ -57,11 +55,13 @@ public class RedisConfiguration extends CachingConfigurerSupport {
         om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
         jackson2JsonRedisSerializer.setObjectMapper(om);
 
+        StringRedisSerializer serializer = new StringRedisSerializer();
+
         template.afterPropertiesSet();
         template.setValueSerializer(jackson2JsonRedisSerializer);
-        template.setKeySerializer(new StringRedisSerializer());
-        template.setHashKeySerializer(new StringRedisSerializer());
-        template.setHashValueSerializer(new LdapFailAwareRedisObjectSerializer());
+        template.setKeySerializer(serializer);
+        template.setHashKeySerializer(serializer);
+        template.setHashValueSerializer(jackson2JsonRedisSerializer);
 
         return template;
     }
