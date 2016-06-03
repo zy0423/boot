@@ -8,10 +8,11 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.annotation.WebFilter;
 
 import org.springframework.stereotype.Component;
 
-//@Component("myFilter")
+//@WebFilter //多个filter执行顺序可以通过类名控制(例.Filter_01、Filter_02、Filter_03)
 public class MyFilter implements Filter
 {
 
