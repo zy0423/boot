@@ -49,13 +49,14 @@ public class ShiroConfiguration
 	{
 		ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
 		shiroFilterFactoryBean.setSecurityManager(getDefaultWebSecurityManager());
-		shiroFilterFactoryBean.setLoginUrl("/login");
+		shiroFilterFactoryBean.setLoginUrl("/");
 		shiroFilterFactoryBean.setSuccessUrl("/home");
-		shiroFilterFactoryBean.setUnauthorizedUrl("/index");
+		shiroFilterFactoryBean.setUnauthorizedUrl("/login");
 
 		filterChainDefinitionMap.put("/home/**", "authc");
 		filterChainDefinitionMap.put("/session/**", "authc");
 		filterChainDefinitionMap.put("/user/**", "authc");
+		filterChainDefinitionMap.put("/register/*", "anon");
 		filterChainDefinitionMap.put("/static/*", "anon");
 
 		shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
@@ -104,8 +105,7 @@ public class ShiroConfiguration
 	}
 
 	@Bean(name = "securityManager")
-	public DefaultWebSecurityManager getDefaultWebSecurityManager()
-	{
+	public DefaultWebSecurityManager getDefaultWebSecurityManager() {
 		DefaultWebSecurityManager dwsm = new DefaultWebSecurityManager();
 		dwsm.setRealm(getShiroRealm());
 		dwsm.setRememberMeManager(rememberMeManager());

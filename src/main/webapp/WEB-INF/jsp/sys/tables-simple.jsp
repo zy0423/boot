@@ -24,7 +24,7 @@ Purchase: http://wrapbootstrap.com
     <link href="/css/weather-icons.min.css" rel="stylesheet" />
 
     <!--Fonts-->
-    <link href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300" rel="stylesheet" type="text/css">
+    <link href="/css/googleapis.family-1.css" rel="stylesheet" type="text/css">
 
     <!--Beyond styles-->
     <link id="beyond-link" href="/css/beyond.min.css" rel="stylesheet" />

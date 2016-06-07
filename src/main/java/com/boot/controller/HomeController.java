@@ -30,7 +30,7 @@ public class HomeController {
     @RequestMapping
     public String main(Model model)
     {
-        return "home";
+        return "sys/index";
     }
 
     @RequestMapping("/users")

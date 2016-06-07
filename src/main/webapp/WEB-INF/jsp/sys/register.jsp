@@ -23,7 +23,7 @@ Purchase: http://wrapbootstrap.com
     <link href="/css/font-awesome.min.css" rel="stylesheet" />
 
     <!--Fonts-->
-    <link href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300" rel="stylesheet" type="text/css">
+    <link href="/css/googleapis.family-1.css" rel="stylesheet" type="text/css">
 
     <!--Beyond styles-->
     <link id="beyond-link" href="/css/beyond.min.css" rel="stylesheet" />
@@ -38,36 +38,43 @@ Purchase: http://wrapbootstrap.com
 <!--Body-->
 <body>
     <div class="register-container animated fadeInDown">
+        <form action="/register" method="post">
         <div class="registerbox bg-white">
-            <div class="registerbox-title">Register</div>
+            <div class="registerbox-title">注册</div>
 
-            <div class="registerbox-caption ">Please fill in your information</div>
+            <div class="registerbox-caption ">请填写您的信息</div>
             <div class="registerbox-textbox">
-                <input type="text" class="form-control" placeholder="Username" />
+                <input type="text" class="form-control" placeholder="用户名" />
             </div>
             <div class="registerbox-textbox">
-                <input type="password" class="form-control" placeholder="Enter Password" />
+                <input type="password" class="form-control" placeholder="密码" />
             </div>
             <div class="registerbox-textbox">
-                <input type="password" class="form-control" placeholder="Confirm Password" />
+                <input type="password" class="form-control" placeholder="再次输入密码" />
+            </div>
+            <div class="registerbox-textbox">
+                <input type="text" class="form-control" placeholder="联系电话" />
+            </div>
+            <div class="registerbox-textbox">
+                <input type="email" class="form-control" placeholder="邮箱" />
             </div>
             <hr class="wide" />
             <div class="registerbox-textbox">
-                <input type="text" class="form-control" placeholder="Name" />
+                <input type="text" class="form-control" placeholder="名" />
             </div>
             <div class="registerbox-textbox">
-                <input type="text" class="form-control" placeholder="Family" />
+                <input type="text" class="form-control" placeholder="姓" />
             </div>
             <div class="registerbox-textbox">
                 <div class="row">
                     <div class="col-lg-6 col-sm-6 col-xs-6 padding-right-10">
-                        <input type="text" class="form-control" placeholder="Month" />
+                        <input type="text" class="form-control" placeholder="月" />
                     </div>
                     <div class="col-lg-3 col-sm-3 col-xs-3 no-padding padding-right-10">
-                        <input type="text" class="form-control" placeholder="Day" />
+                        <input type="text" class="form-control" placeholder="日" />
                     </div>
                     <div class="col-lg-3 col-sm-3 col-xs-3 no-padding-left">
-                        <input type="text" class="form-control" placeholder="Year" />
+                        <input type="text" class="form-control" placeholder="年" />
                     </div>
                 </div>
             </div>
@@ -75,14 +82,15 @@ Purchase: http://wrapbootstrap.com
                 <div class="checkbox">
                     <label>
                         <input type="checkbox" class="colored-primary" checked="checked">
-                        <span class="text darkgray">I agree to the Company <a class="themeprimary">Terms of Service</a> and Privacy Policy</span>
+                        <span class="text darkgray">我同意该公司 <a class="themeprimary">服务条款</a>和隐私政策</span>
                     </label>
                 </div>
             </div>
             <div class="registerbox-submit">
-                <input type="button" class="btn btn-primary pull-right" value="SUBMIT">
+                <input type="button" class="btn btn-primary pull-right" value="保存">
             </div>
         </div>
+        </form>
         <div class="logobox">
         </div>
     </div>
@@ -94,19 +102,6 @@ Purchase: http://wrapbootstrap.com
 
     <!--Beyond Scripts-->
     <script src="/js/beyond.min.js"></script>
-    <!--Google Analytics::Demo Only-->
-    <script>
-        (function (i, s, o, g, r, a, m) {
-            i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
-                (i[r].q = i[r].q || []).push(arguments)
-            }, i[r].l = 1 * new Date(); a = s.createElement(o),
-            m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
-        })(window, document, 'script', 'http://www.google-analytics.com/analytics.js', 'ga');
-
-        ga('create', 'UA-52103994-1', 'auto');
-        ga('send', 'pageview');
-
-    </script>
 </body>
 <!--Body Ends-->
 </html>

@@ -32,7 +32,8 @@ Purchase: http://wrapbootstrap.com
             font-style: normal;
         }
     </style>
-    <link href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300" rel="stylesheet" type="text/css">
+    <!--Fonts-->
+    <link href="/css/googleapis.family-1.css" rel="stylesheet" type="text/css">
 
     <!--Beyond styles-->
     <link href="/css/beyond-rtl.min.css" rel="stylesheet" />
@@ -2006,20 +2007,6 @@ Purchase: http://wrapbootstrap.com
 
         //Initiates Sparkline Chart instances in page
         InitiateSparklineCharts.init();
-    </script>
-
-    <!--Google Analytics::Demo Only-->
-    <script>
-        (function (i, s, o, g, r, a, m) {
-            i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
-                (i[r].q = i[r].q || []).push(arguments)
-            }, i[r].l = 1 * new Date(); a = s.createElement(o),
-            m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
-        })(window, document, 'script', 'http://www.google-analytics.com/analytics.js', 'ga');
-
-        ga('create', 'UA-52103994-1', 'auto');
-        ga('send', 'pageview');
-
     </script>
 </body>
 <!--  /Body -->

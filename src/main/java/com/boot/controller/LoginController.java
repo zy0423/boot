@@ -2,11 +2,13 @@ package com.boot.controller;
 
 
 import com.boot.bean.User;
+import com.boot.service.UserService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +20,9 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 public class LoginController
 {
+
+	@Autowired
+	private UserService userService;
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public String fail(User user, boolean rememberMe, Model model) {
@@ -74,6 +79,17 @@ public class LoginController
 	public String logout() {
 		SecurityUtils.getSubject().logout();
 		return "redirect:/index";
+	}
+
+	@RequestMapping(value = "/register",method = RequestMethod.GET)
+	public String toRegister(){
+		return "sys/register";
+	}
+
+	@RequestMapping(value = "/register",method = RequestMethod.POST)
+	public String register(User user){
+		userService.addUser(user);
+		return "redirect:/";
 	}
 
 }

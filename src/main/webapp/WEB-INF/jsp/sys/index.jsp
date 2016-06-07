@@ -1,11 +1,6 @@
 ﻿<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@include file="../common/taglib.jsp"%>
 <!DOCTYPE html>
-<!--
-BeyondAdmin - Responsive Admin Dashboard Template build with Twitter Bootstrap 3.2.0
-Version: 1.0.0
-Purchase: http://wrapbootstrap.com
--->
-
 <html xmlns="http://www.w3.org/1999/xhtml">
     <!-- Head -->
 <head>
@@ -25,8 +20,9 @@ Purchase: http://wrapbootstrap.com
     <link href="/css/weather-icons.min.css" rel="stylesheet" />
 
     <!--Fonts-->
-    <link href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300" rel="stylesheet" type="text/css">
-    <link href='http://fonts.googleapis.com/css?family=Roboto:400,300' rel='stylesheet' type='text/css'>
+    <link href="/css/googleapis.family-1.css" rel="stylesheet" type="text/css">
+    <link href="/css/googleapis.family-2.css" rel="stylesheet" type="text/css">
+
     <!--Beyond styles-->
     <link id="beyond-link" href="/css/beyond.min.css" rel="stylesheet" type="text/css" />
     <link href="/css/demo.min.css" rel="stylesheet" />
@@ -1992,20 +1988,6 @@ Purchase: http://wrapbootstrap.com
         });
 
     </script>
-    <!--Google Analytics::Demo Only-->
-    <script>
-        (function (i, s, o, g, r, a, m) {
-            i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
-                (i[r].q = i[r].q || []).push(arguments)
-            }, i[r].l = 1 * new Date(); a = s.createElement(o),
-            m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
-        })(window, document, 'script', 'http://www.google-analytics.com/analytics.js', 'ga');
-
-        ga('create', 'UA-52103994-1', 'auto');
-        ga('send', 'pageview');
-
-    </script>
-
 </body>
     <!--  /Body -->
 </html>

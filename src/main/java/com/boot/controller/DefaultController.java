@@ -17,9 +17,10 @@ public class DefaultController
     @Autowired
     private UserService userService;
 
-    @RequestMapping(value = {"/", "/index","/login"},method = RequestMethod.GET)
+
+    @RequestMapping(value = {"/","login"},method = RequestMethod.GET)
     public String index()
     {
-        return "sys/index";
+        return "sys/login";
     }
 }
